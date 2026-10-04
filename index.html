@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>BiLyRuSh Albion Merchant</title>
+<style>
+:root{--bg:#0b0f14;--card:#121923;--muted:#8fa1b5;--text:#eef5ff;--accent:#4cc9f0;--good:#67d391;--warn:#f3c969;--bad:#ff7a90;--line:#243042}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;background:linear-gradient(180deg,#091018,#0b0f14 30%);color:var(--text)}
+.wrap{max-width:980px;margin:auto;padding:18px}.hero{padding:18px 0 8px}.hero h1{font-size:30px;margin:0 0 6px}.hero p{margin:0;color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin:14px 0;box-shadow:0 12px 30px rgba(0,0,0,.18)}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.field label{display:block;font-size:12px;color:var(--muted);margin:0 0 6px}.field select,.field input{width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:#0d141d;color:var(--text);font-size:16px}
+button{width:100%;padding:14px 16px;border-radius:14px;border:0;background:var(--accent);color:#041019;font-weight:800;font-size:17px;cursor:pointer}
+button:disabled{opacity:.6;cursor:wait}.status{margin-top:12px;color:var(--muted);font-size:14px;min-height:20px}
+.best{display:none;border:1px solid rgba(103,211,145,.35);background:rgba(103,211,145,.08)}.best.show{display:block}.best h2{margin:0 0 8px;font-size:16px;color:var(--good)}.best .big{font-size:26px;font-weight:900}.best .sub{margin-top:6px;color:var(--muted)}
+.tablewrap{overflow:auto}.tbl{width:100%;border-collapse:collapse;margin-top:8px;min-width:720px}.tbl th,.tbl td{text-align:left;padding:11px 10px;border-bottom:1px solid var(--line)}.tbl th{font-size:12px;color:var(--muted);font-weight:600}.tag{padding:4px 8px;border-radius:999px;font-size:12px;font-weight:700;display:inline-block}.fresh{background:rgba(103,211,145,.12);color:var(--good)}.stale{background:rgba(243,201,105,.12);color:var(--warn)}.nodata{background:rgba(255,122,144,.12);color:var(--bad)}
+.note{font-size:13px;color:var(--muted);line-height:1.5}.footer{padding:12px 0 32px;color:var(--muted);font-size:12px}
+@media(max-width:760px){.grid{grid-template-columns:1fr 1fr}.hero h1{font-size:25px}}
+@media(max-width:460px){.grid{grid-template-columns:1fr}.wrap{padding:12px}.card{padding:14px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <h1>BiLyRuSh Albion Merchant</h1>
+    <p>Escáner de mercados · Americas · datos de Albion Online Data Project</p>
+  </div>
+
+  <div class="card">
+    <div class="grid">
+      <div class="field">
+        <label>Recurso</label>
+        <select id="resource">
+          <option value="HIDE">Hide</option>
+          <option value="LEATHER">Leather</option>
+          <option value="ORE">Ore</option>
+          <option value="METALBAR">Metal Bar</option>
+          <option value="WOOD">Wood</option>
+          <option value="PLANKS">Planks</option>
+          <option value="FIBER">Fiber</option>
+          <option value="CLOTH">Cloth</option>
+          <option value="ROCK">Rock</option>
+          <option value="STONEBLOCK">Stone Block</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Tier</label>
+        <select id="tier">
+          <option>2</option><option>3</option><option selected>4</option><option>5</option><option>6</option><option>7</option><option>8</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Encantamiento</label>
+        <select id="ench">
+          <option value="">.0</option><option value="@1">.1</option><option value="@2">.2</option><option value="@3">.3</option><option value="@4">.4</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Cantidad</label>
+        <input id="qty" type="number" min="1" value="420">
+      </div>
+    </div>
+    <div style="margin-top:12px">
+      <button id="scan">Escanear todos los markets</button>
+      <div class="status" id="status">Listo.</div>
+    </div>
+  </div>
+
+  <div class="card best" id="best">
+    <h2>MEJOR PRECIO DISPONIBLE</h2>
+    <div class="big" id="bestline"></div>
+    <div class="sub" id="bestsub"></div>
+  </div>
+
+  <div class="card">
+    <div class="tablewrap">
+      <table class="tbl">
+        <thead><tr><th>Ciudad</th><th>Buy Now</th><th>Sell Now</th><th>Edad dato</th><th>Coste × cantidad</th><th>Estado</th></tr></thead>
+        <tbody id="rows"><tr><td colspan="6" style="color:var(--muted)">Pulsa “Escanear todos los markets”.</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="note">
+      <strong>Importante:</strong> Buy Now = oferta de venta más barata disponible. Sell Now = mejor orden de compra existente.
+      Si el dato es viejo, la app lo marca para que no viajes por una cifra probablemente obsoleta.
+    </div>
+  </div>
+
+  <div class="footer">No automatiza el juego. Solo analiza datos públicos de mercado.</div>
+</div>
+<script>
+const API='https://west.albion-online-data.com/api/v2/stats/prices/';
+const CITIES=['Bridgewatch','Martlock','Lymhurst','Fort Sterling','Thetford','Caerleon'];
+const $=id=>document.getElementById(id);
+function itemId(){return 'T'+$('tier').value+'_'+$('resource').value+$('ench').value}
+function fmt(n){return Number.isFinite(n)?Math.round(n).toLocaleString('en-US'):'—'}
+function parseDate(s){if(!s)return null; const d=new Date(s.endsWith('Z')?s:s+'Z'); return isNaN(d)?null:d}
+function ageText(s){const d=parseDate(s); if(!d)return {text:'sin fecha',mins:1e9}; const m=Math.max(0,(Date.now()-d.getTime())/60000); if(m<60)return {text:Math.round(m)+' min',mins:m}; if(m<1440)return {text:(m/60).toFixed(1)+' h',mins:m}; return {text:(m/1440).toFixed(1)+' d',mins:m}}
+function cityName(x){return x.city||x.location||'—'}
+async function scan(){
+  const btn=$('scan'), status=$('status'), rows=$('rows'), best=$('best');
+  btn.disabled=true; status.textContent='Consultando mercados…'; rows.innerHTML=''; best.classList.remove('show');
+  const id=itemId(), qty=Math.max(1,Number($('qty').value||1));
+  try{
+    const url=API+encodeURIComponent(id)+'?locations='+encodeURIComponent(CITIES.join(','));
+    const r=await fetch(url,{cache:'no-store'});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const data=await r.json();
+    const map=new Map(data.map(x=>[cityName(x),x]));
+    const out=CITIES.map(city=>{
+      const x=map.get(city)||{};
+      const sell=Number(x.sell_price_min||0);
+      const buy=Number(x.buy_price_max||0);
+      const age=ageText(x.sell_price_min_date);
+      return {city,sell,buy,age,total:sell>0?sell*qty:null};
+    }).sort((a,b)=>{
+      if(!a.sell && !b.sell)return 0;if(!a.sell)return 1;if(!b.sell)return -1;return a.sell-b.sell
+    });
+    rows.innerHTML=out.map(o=>{
+      let cls='nodata', label='SIN DATA';
+      if(o.sell>0){ if(o.age.mins<=60){cls='fresh';label='FRESCO'} else {cls='stale';label='VERIFICAR'} }
+      return '<tr><td><strong>'+o.city+'</strong></td><td>'+fmt(o.sell)+'</td><td>'+fmt(o.buy)+'</td><td>'+o.age.text+'</td><td>'+fmt(o.total)+'</td><td><span class="tag '+cls+'">'+label+'</span></td></tr>'
+    }).join('');
+    const usable=out.filter(o=>o.sell>0 && o.age.mins<=60);
+    const candidate=usable[0]||out.find(o=>o.sell>0);
+    if(candidate){
+      $('bestline').textContent=candidate.city+' · '+fmt(candidate.sell)+' silver/u';
+      $('bestsub').textContent='Cantidad '+qty+' → '+fmt(candidate.total)+' silver aprox. '+(candidate.age.mins<=60?'Dato fresco.':'Dato antiguo: confirma antes de viajar.');
+      best.classList.add('show');
+    }
+    status.textContent='Escaneo completado para '+id+'.';
+  }catch(e){
+    console.error(e);
+    rows.innerHTML='<tr><td colspan="6" style="color:var(--bad)">No se pudo consultar AODP desde este navegador.</td></tr>';
+    status.textContent='Error: '+e.message+'. Si persiste, usaré proxy/backend en la próxima versión.';
+  }finally{btn.disabled=false}
+}
+$('scan').addEventListener('click',scan);
+</script>
+</body></html>
