@@ -1,7 +1,7 @@
 'use strict';
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const M = require('./market.js');
+const M = require('./dist/market.js');
 const now = Date.parse('2026-10-04T23:30:00Z');
 const row = (city, sell, sellDate, buy = 100, buyDate = sellDate) => ({ item_id:'T4_HIDE',quality:1,city,sell_price_min:sell,sell_price_min_date:sellDate,buy_price_max:buy,buy_price_max_date:buyDate });
 test('resource IDs use LEVEL for enchantments; unsupported combinations fail', () => {

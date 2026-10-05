@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>BiLyRuSh Albion Merchant</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%228%22%20fill%3D%22%23121923%22%2F%3E%3Cpath%20d%3D%22M7%2023V9l9%209%209-9v14%22%20fill%3D%22none%22%20stroke%3D%22%234cc9f0%22%20stroke-width%3D%224%22%2F%3E%3C%2Fsvg%3E">
+<style>
+:root{--bg:#0b0f14;--card:#121923;--muted:#8fa1b5;--text:#eef5ff;--accent:#4cc9f0;--good:#67d391;--warn:#f3c969;--bad:#ff7a90;--line:#243042}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;background:linear-gradient(180deg,#091018,#0b0f14 30%);color:var(--text)}
+.wrap{max-width:980px;margin:auto;padding:18px}.hero{padding:18px 0 8px}.hero h1{font-size:30px;margin:0 0 6px}.hero p{margin:0;color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin:14px 0;box-shadow:0 12px 30px rgba(0,0,0,.18)}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.field label{display:block;font-size:12px;color:var(--muted);margin:0 0 6px}.field select,.field input{width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:#0d141d;color:var(--text);font-size:16px}
+button{width:100%;padding:14px 16px;border-radius:14px;border:0;background:var(--accent);color:#041019;font-weight:800;font-size:17px;cursor:pointer}
+button:disabled{opacity:.6;cursor:wait}.status{margin-top:12px;color:var(--muted);font-size:14px;min-height:20px}
+.best{display:none;border:1px solid rgba(103,211,145,.35);background:rgba(103,211,145,.08)}.best.show{display:block}.best h2{margin:0 0 8px;font-size:16px;color:var(--good)}.best .big{font-size:26px;font-weight:900}.best .sub{margin-top:6px;color:var(--muted)}
+.tablewrap{overflow:auto}.tbl{width:100%;border-collapse:collapse;margin-top:8px;min-width:560px}.tbl th,.tbl td{text-align:left;padding:11px 10px;border-bottom:1px solid var(--line)}.tbl th{font-size:12px;color:var(--muted);font-weight:600}.tag{padding:4px 8px;border-radius:999px;font-size:12px;font-weight:700;display:inline-block}.fresh{background:rgba(103,211,145,.12);color:var(--good)}.stale{background:rgba(243,201,105,.12);color:var(--warn)}.nodata{background:rgba(255,122,144,.12);color:var(--bad)}
+.note{font-size:13px;color:var(--muted);line-height:1.5}.footer{padding:12px 0 32px;color:var(--muted);font-size:12px}
+@media(max-width:760px){.grid{grid-template-columns:1fr 1fr}.hero h1{font-size:25px}}
+@media(max-width:460px){.grid{grid-template-columns:1fr}.wrap{padding:12px}.card{padding:14px}}
+td small{display:block;margin-top:6px;font-size:11px;background:transparent!important} .preferences{grid-template-columns:1fr 1fr}.tbl td{vertical-align:top}button:focus-visible,select:focus-visible,input:focus-visible,.tablewrap:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+@media(max-width:460px){.preferences{grid-template-columns:1fr}.best .big{font-size:23px}}
+
+[hidden]{display:none!important}.wrap{max-width:1160px}.hero h1{font-size:28px}h2{font-size:20px;margin:0 0 12px}h3{font-size:17px}.tabs{display:flex;gap:8px;margin:22px 0;flex-wrap:wrap}.tabs button{width:auto;flex:1;padding:11px;font-size:14px;color:var(--muted);background:#131e2b;border:1px solid var(--line)}.tabs button[aria-current=page]{background:var(--accent);color:#041019}.field label{font-size:14px}.field{min-width:0}p{line-height:1.5}.grid{margin-bottom:12px}.operation-inputs{grid-template-columns:1fr 1fr 2fr}.section-head{display:flex;justify-content:space-between;gap:16px;align-items:start}.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:16px 0}.metric{background:#0c141f;padding:14px;border-radius:10px}.metric span{display:block;color:var(--muted);font-size:13px}.metric strong{display:block;font-size:23px;margin-top:5px;overflow-wrap:anywhere}.positive{color:var(--good)}.negative{color:var(--bad)}.warning-box{border-left:3px solid var(--warn);padding:10px 14px;background:#26241e;margin:12px 0}.secondary{background:#24384b;color:var(--text);margin:8px 0;font-size:14px}.smallbutton{font-size:13px;padding:7px 10px;width:auto}.field textarea{display:block;width:100%;margin:8px 0 14px;padding:12px;border:1px solid var(--line);border-radius:12px;background:#0d141d;color:var(--text);font:inherit}summary{font-size:18px;cursor:pointer;font-weight:700}details[open] summary{margin-bottom:16px}.checks{display:grid;gap:10px;margin:16px 0}.check{display:block;margin:12px 0}input[type=checkbox]{width:auto;accent-color:var(--accent)}a{color:var(--accent)}.record{border-top:1px solid var(--line);padding:14px 0}.compact{font-size:13px;color:var(--muted)}.tbl{font-size:14px}.tbl th{font-size:13px}.tbl small{font-size:12px}.badge{font-size:12px;color:var(--warn)}.tablewrap{max-width:100%}.panel .card{overflow-wrap:anywhere}.metric .note{font-size:12px}label{line-height:1.4}.note{font-size:14px}.panel button{min-height:44px}.rank-selected{background:#182c3c}
+@media(max-width:760px){.operation-inputs{grid-template-columns:1fr 1fr}.operation-inputs .field:last-child{grid-column:1/-1}.section-head{display:block}.tabs button{flex:1 0 28%}.grid{grid-template-columns:1fr 1fr}.metrics{grid-template-columns:1fr 1fr}}
+@media(max-width:460px){.grid{grid-template-columns:1fr}.operation-inputs .field:last-child{grid-column:auto}.metric{padding:10px}.metric strong{font-size:19px}.hero h1{font-size:23px}.tabs{gap:5px}.tabs button{font-size:13px;padding:10px 5px}.metrics{gap:8px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <h1>BiLyRuSh Albion Merchant</h1>
+    <p>Americas · Leather Refining en Martlock · V0.4</p>
+  </div>
+
+  <nav class="tabs" aria-label="Secciones">
+    <button data-tab="scanner" aria-current="page">Escáner</button><button data-tab="operations">Operaciones</button><button data-tab="inventory">Inventario</button><button data-tab="training">Entrenamiento</button><button data-tab="settings">Ajustes</button>
+  </nav>
+  <div id="saveStatus" class="note" role="status"></div>
+  <section id="panel-scanner" class="panel" aria-label="Escáner">
+  <div class="card">
+    <div class="grid">
+      <div class="field">
+        <label for="resource">Recurso</label>
+        <select id="resource">
+          <option value="HIDE">Hide</option>
+          <option value="LEATHER">Leather</option>
+          <option value="ORE">Ore</option>
+          <option value="METALBAR">Metal Bar</option>
+          <option value="WOOD">Wood</option>
+          <option value="PLANKS">Planks</option>
+          <option value="FIBER">Fiber</option>
+          <option value="CLOTH">Cloth</option>
+          <option value="ROCK">Rock</option>
+          <option value="STONEBLOCK">Stone Block</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="tier">Tier</label>
+        <select id="tier">
+          <option>2</option><option>3</option><option selected>4</option><option>5</option><option>6</option><option>7</option><option>8</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="ench">Encantamiento</label>
+        <select id="ench">
+          <option value="0">.0</option><option value="1">.1</option><option value="2">.2</option><option value="3">.3</option><option value="4">.4</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="qty">Cantidad</label>
+        <input id="qty" type="number" min="1" max="1000000000" step="1" inputmode="numeric" value="420">
+      </div>
+    </div>
+    <div style="margin-top:12px">
+      <button id="scan">Escanear todos los markets</button>
+      <div class="status" id="status" role="status" aria-live="polite">Listo.</div>
+    </div>
+  </div>
+
+  <div class="card best" id="best">
+    <h2 id="bestheading">MENOR BUY NOW CON DATO RECIENTE</h2>
+    <div class="big" id="bestline"></div>
+    <div class="sub" id="bestsub"></div>
+  </div>
+
+  <div class="card">
+    <div class="grid preferences">
+      <div class="field"><label for="sort">Ordenar por</label><select id="sort"><option value="buy">Buy Now: menor precio</option><option value="sell">Sell Now: mayor precio</option><option value="age">Buy Now: más reciente</option></select></div>
+      <div class="field"><label for="freshness">Antigüedad máxima para destacar</label><select id="freshness"><option value="15">15 minutos</option><option value="60" selected>1 hora</option><option value="180">3 horas</option></select></div>
+    </div>
+    <div class="tablewrap" tabindex="0" role="region" aria-label="Precios de seis ciudades; desliza horizontalmente en móvil">
+      <table class="tbl">
+        <thead><tr><th>Ciudad</th><th>Buy Now</th><th>Sell Now</th><th>Compra total estimada</th></tr></thead>
+        <tbody id="rows"><tr><td colspan="4" style="color:var(--muted)">Pulsa “Escanear todos los markets”.</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="note">
+      <strong>Importante:</strong> Buy Now = oferta de venta más barata disponible. Sell Now = mejor orden de compra existente.
+      Cada precio tiene su propia fecha. “FRESCO” describe la antigüedad, no garantiza disponibilidad. Los totales multiplican el mejor precio por la cantidad; no confirman profundidad de mercado, impuestos, transporte ni beneficio. Caerleon requiere evaluar la ruta y su riesgo antes de transportar.
+    </div>
+  </div>
+
+  </section>
+  <section id="panel-operations" class="panel" hidden aria-label="Operaciones">
+    <div class="card"><div class="section-head"><div><h2>Tu próxima operación</h2><p class="note">T4.0 Medium Hide → Worked Leather · refinado en Martlock · sin Focus</p></div><span class="tag stale">MODELO EN CALIBRACIÓN</span></div>
+      <div class="grid operation-inputs">
+        <div class="field"><label for="opQty">Medium Hide iniciales</label><input id="opQty" type="number" min="2" max="1000000" step="1" value="420"></div>
+        <div class="field"><label for="opMode">Objetivo</label><select id="opMode"><option value="training">Entrenamiento</option><option value="profit">Beneficio</option></select></div>
+        <div class="field"><label for="opExecution">Compra → venta</label><select id="opExecution"><option value="instant">Buy Now → Sell Now</option><option value="instant-order">Buy Now → Sell Order</option><option value="order-instant">Buy Order → Sell Now</option><option value="order-order">Buy Order → Sell Order</option></select></div>
+      </div>
+      <p class="note">El lote incluye materiales existentes. Las órdenes usan los precios objetivo que registres abajo; nunca se inventa una orden competitiva.</p>
+      <button id="opScan">Buscar operaciones</button><p id="opStatus" class="status" role="status" aria-live="polite">Primero revisa tu Inventario y completa impuestos, tarifa y límites en Ajustes. Luego consulta los tres materiales en seis ciudades.</p>
+    </div>
+    <div id="opSummary" class="card"><h2>Falta consultar el mercado</h2><p>Se compararán compra local, transporte y destino de venta usando tu inventario.</p></div>
+    <div class="card"><h2>Compra local frente a otras ciudades</h2><p class="note">Base: comprar lo que falta en Martlock. El ahorro de efectivo incluye el coste directo de la ruta de compra y puede reflejar inventario propio en otra ciudad; no equivale a beneficio económico. El valor del tiempo se calcula por separado.</p><div id="routesResults" class="tablewrap"></div></div>
+    <div class="card"><h2>Dónde vender el cuero producido</h2><p class="note">Solo se vende la producción nueva del lote. Los cueros que ya tenías permanecen en tu inventario.</p><div id="saleResults" class="tablewrap"></div></div>
+    <div class="card"><h2>Alternativas del lote</h2><div id="rankedResults" class="tablewrap"></div></div>
+    <div class="card"><h2>Refinado por pases</h2><p class="note">Receta: 2 Medium Hide + 1 Thick Leather → 1 Worked Leather. Se reutilizan retornos hasta agotar un ingrediente. Modelo: retorno medio redondeado hacia abajo por pase, sin reproducir el azar del juego.</p><div id="simResults" class="tablewrap"></div><p id="simTotals" class="note"></p></div>
+    <details class="card"><summary>Precios manuales, órdenes y profundidad</summary>
+      <p class="note">Una observación manual reemplaza temporalmente AODP para ese material, ciudad y tipo de precio. Guarda fecha y antigüedad. Una orden propuesta no confirma ejecución.</p>
+      <form id="overrideForm"><div class="grid">
+        <div class="field"><label for="overrideCity">Ciudad</label><select id="overrideCity" data-cities></select></div>
+        <div class="field"><label for="overrideItem">Material</label><select id="overrideItem" data-items></select></div>
+        <div class="field"><label for="overrideKind">Tipo</label><select id="overrideKind"><option value="buy">Buy Now</option><option value="sell">Sell Now</option><option value="buyOrder">Precio objetivo Buy Order</option><option value="sellOrder">Precio objetivo Sell Order</option></select></div>
+        <div class="field"><label for="overridePrice">Precio por unidad</label><input id="overridePrice" type="number" min="0.01" step="any"></div>
+        <div class="field"><label for="overrideQuantity">Unidades disponibles (opcional)</label><input id="overrideQuantity" type="number" min="1" step="1" placeholder="Sin confirmar"></div>
+      </div><div class="field"><label for="overrideDepth">Niveles del mercado (opcional, sustituyen el precio único)</label><textarea id="overrideDepth" placeholder="10 @ 104&#10;50 @ 106&#10;100 @ 108&#10;260 @ 111" rows="4"></textarea></div><button>Guardar observación de ahora</button></form><div id="overrideList"></div>
+    </details>
+    <details class="card"><summary>Diario y calibración</summary>
+      <p class="note">Guardar una operación no modifica el inventario automáticamente. Registra importes reales por separado para comparar con la previsión.</p>
+      <button id="journalPrediction" class="secondary" disabled>Guardar escenario seleccionado</button>
+      <form id="journalForm"><div class="grid">
+        <div class="field"><label for="journalOrigin">Origen de compra</label><select id="journalOrigin" data-cities></select></div>
+        <div class="field"><label for="journalSaleCity">Ciudad de venta</label><select id="journalSaleCity" data-cities></select></div>
+        <div class="field"><label for="journalQty">Hide iniciales</label><input id="journalQty" type="number" min="1" step="1" value="420" required></div>
+        <div class="field"><label for="journalCash">Compras pagadas (silver)</label><input id="journalCash" type="number" min="0" step="any"></div>
+        <div class="field"><label for="journalTransport">Transporte pagado</label><input id="journalTransport" type="number" min="0" step="any"></div>
+        <div class="field"><label for="journalMinutes">Minutos de viaje</label><input id="journalMinutes" type="number" min="0" step="any"></div>
+        <div class="field"><label for="journalFees">Estación pagada (todos los pases)</label><input id="journalFees" type="number" min="0" step="any"></div>
+        <div class="field"><label for="journalOutput">Cuero producido</label><input id="journalOutput" type="number" min="0" step="1"></div>
+        <div class="field"><label for="journalGross">Venta bruta realizada</label><input id="journalGross" type="number" min="0" step="any"></div>
+        <div class="field"><label for="journalMarketFees">Impuestos y órdenes pagados</label><input id="journalMarketFees" type="number" min="0" step="any"></div>
+        <div class="field"><label for="journalFame">Fame obtenida</label><input id="journalFame" type="number" min="0" step="any"></div>
+        <div class="field"><label for="journalFocus">Focus usado</label><input id="journalFocus" type="number" min="0" step="1" value="0"></div>
+        <div class="field"><label for="journalOwnValue">Valor inicial de materiales propios aportados</label><input id="journalOwnValue" type="number" min="0" step="any"></div>
+        <div class="field"><label for="journalResidual">Valor de sobrantes del lote</label><input id="journalResidual" type="number" min="0" step="any"></div>
+        <div class="field"><label for="journalHideLeft">Hide sobrantes</label><input id="journalHideLeft" type="number" min="0" step="1"></div>
+        <div class="field"><label for="journalLeatherLeft">Thick Leather sobrantes</label><input id="journalLeatherLeft" type="number" min="0" step="1"></div>
+      </div><div class="field"><label for="journalNotes">Notas, retornos o acciones intermedias</label><textarea id="journalNotes" rows="2"></textarea></div><button>Guardar resultado real</button></form>
+      <div id="journalList"></div><h3>Sesión observada · 4 oct 2026</h3><div id="calibration"></div>
+    </details>
+  </section>
+  <section id="panel-inventory" class="panel" hidden aria-label="Inventario">
+    <div class="card"><h2>Inventario por ciudad</h2><p class="note">Datos iniciales del documento del 4 oct 2026. Revísalos antes de usarlos. Se guardan en este navegador; no se leen automáticamente del juego ni se sincronizan con otros dispositivos.</p><div class="field"><label for="inventoryCity">Ciudad del banco</label><select id="inventoryCity" data-cities></select></div><div id="inventoryFields" class="grid"></div><button id="saveInventory">Guardar inventario de esta ciudad</button><p id="inventoryStatus" role="status" class="note"></p></div>
+    <div class="card"><h2>Tu capital</h2><div id="capitalSummary" class="metrics"></div><p class="note">Gold se conserva como reserva informativa. Nunca se convierte automáticamente a silver. Efectivo, reservas y órdenes abiertas se editan en Ajustes.</p></div>
+    <div class="card"><h2>Copia de tus datos</h2><p class="note">Exporta inventario, ajustes, rutas, precios manuales y diario para llevarlos a otro dispositivo.</p><button id="exportState" class="secondary">Descargar copia JSON</button><div class="field"><label for="importState">Importar copia JSON (reemplaza datos de este navegador)</label><input id="importState" type="file" accept="application/json,.json"></div><p id="importStatus" class="note" role="status"></p></div>
+  </section>
+  <section id="panel-training" class="panel" hidden aria-label="Entrenamiento">
+    <div class="card"><h2>Leather Refining</h2><p class="note">Progreso observado en el documento. Actualízalo después de jugar.</p><div id="trainingFields" class="grid"></div><button id="saveTraining">Guardar progreso</button><div id="trainingSummary" class="metrics"></div><p id="trainingProjection" class="note"></p></div>
+    <div class="card"><h2>Entrenar con un límite claro</h2><p>El modo Entrenamiento ordena por coste económico por Fame y luego por efectivo necesario. El modo Beneficio ordena por beneficio estimado, descontando el valor del tiempo cuando está configurado.</p><p class="note">Fame por craft se introduce en Ajustes hasta verificar una regla reproducible. Los 15,450 Fame observados en la sesión no se convierten automáticamente en una tasa universal. Focus se registra, pero esta versión calcula sin Focus.</p></div>
+  </section>
+  <section id="panel-settings" class="panel" hidden aria-label="Ajustes">
+    <form id="settingsForm" class="card"><h2>Parámetros de la operación</h2><p class="note">Un campo vacío significa desconocido, no cero. RRR 36.7% y tarifa 13.5 proceden de la sesión observada; no son tarifas garantizadas para hoy.</p><div id="settingsFields" class="grid"></div><div class="checks"><label><input id="premium" type="checkbox"> Premium activo (informativo; no cambia impuestos automáticamente)</label><label><input id="feesConfirmed" type="checkbox"> Confirmé el retorno y la tarifa de mi estación</label><label><input id="profileConfirmed" type="checkbox"> Revisé saldo, ciudad e inventario</label><label><input id="allowRisk" type="checkbox"> Incluir rutas de riesgo, incluida Caerleon</label></div><button>Guardar ajustes</button><p id="settingsStatus" class="note" role="status"></p></form>
+    <div class="card"><h2>Rutas y transporte</h2><p class="note">Configura la compra (desplazamiento completo para recoger materiales y volver a Martlock) y la venta (Martlock al mercado de destino). No se supone que una ciudad sea más cercana por su posición en el mapa.</p><div class="grid"><div class="field"><label for="routeCity">Ciudad</label><select id="routeCity"></select></div><div class="field"><label for="routeLeg">Trayecto</label><select id="routeLeg"><option value="in">Compra: ir a buscar y volver</option><option value="out">Venta: Martlock → destino</option></select></div></div><form id="routeForm"><div class="grid">
+      <div class="field"><label for="routeMode">Transporte</label><select id="routeMode"><option value="physical">Físico</option><option value="planner">Travel Planner con carga</option></select></div>
+      <div class="field"><label for="routeCost">Coste directo total (silver)</label><input id="routeCost" type="number" min="0" step="any" placeholder="Desconocido"></div>
+      <div class="field"><label for="routeMinutes">Minutos totales estimados</label><input id="routeMinutes" type="number" min="0.1" step="any" placeholder="Sin estimar"></div>
+      <div class="field"><label for="routeHops">Transiciones de zona totales</label><input id="routeHops" type="number" min="1" step="1" placeholder="Sin verificar"></div>
+      <div class="field"><label for="routeRisk">Exposición de la ruta</label><select id="routeRisk"><option value="unknown">Sin verificar</option><option value="lower">Ruta azul/amarilla verificada por mí</option><option value="risky">Incluye zona de riesgo</option></select></div>
+    </div><label class="check"><input id="routeConfirmed" type="checkbox"> Verifiqué este recorrido y sus costes</label><button>Guardar ruta / cotización de ahora</button><p id="routeStatus" class="note" role="status"></p></form><div id="routeReference" class="note"></div>
+    </div>
+    <details class="card"><summary>Fuentes, supuestos y límites</summary><p>Los precios son observaciones de AODP; su API de precios no proporciona profundidad de libro ni garantiza el llenado de un lote. Los niveles manuales permiten calcular precio medio ponderado.</p><p>El beneficio económico valora materiales propios y sobrantes a coste de reposición. El flujo de caja muestra únicamente entradas y salidas de silver. El valor de los sobrantes no se suma a tu efectivo.</p><p>Sin impuestos, costes esenciales o precios vigentes no hay recomendación. La confianza nunca se presenta como alta mientras los retornos y la ejecución estén en calibración. No se estima la probabilidad de pérdida en rutas.</p><p><a href="https://www.albion-online-data.com/api/" target="_blank" rel="noopener">Documentación AODP</a> · <a href="https://github.com/ao-data/ao-bin-dumps" target="_blank" rel="noopener">Datos de juego para conexiones de rutas</a></p></details>
+  </section>
+  <div class="footer">V0.4 · Herramienta externa. No compra, vende ni transporta dentro del juego.</div>
+</div>
+<script src="market.js"></script>
+<script src="app.js"></script>
+<script src="routes-data.js"></script>
+<script src="routes.js"></script>
+<script src="economy.js"></script>
+<script src="economy-ui.js"></script>
+</body></html>

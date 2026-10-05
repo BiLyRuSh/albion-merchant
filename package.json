@@ -1,0 +1,11 @@
+{
+  "name": "bilyrush-albion-merchant",
+  "version": "0.4.0",
+  "private": true,
+  "description": "Scanner and guarded leather operation planner for Albion Americas",
+  "scripts": {
+    "test": "node --test market.test.js economy.test.js routes.test.js ui.test.js",
+    "test:core": "node --test market.test.js economy.test.js routes.test.js"
+  },
+  "devDependencies": {"jsdom": "30.1.2"}
+}

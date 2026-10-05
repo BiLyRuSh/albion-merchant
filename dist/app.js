@@ -41,7 +41,7 @@ function render() {
   $('bestline').textContent = best ? best.city + ' · ' + fmt(best.buyNow.price) + ' silver/u' : 'Verifica el mercado antes de viajar';
   $('bestsub').textContent = best ? `${qty.toLocaleString('en-US')} unidades → ${fmt(best.total)} silver estimados. Dato de hace ${best.buyNow.age.text}. Disponibilidad del lote no confirmada.` : 'Las cotizaciones antiguas siguen visibles como referencia. No hay una recomendación de compra.';
   const count = rows.filter(x => x.buyNow.price !== null || x.sellNow.price !== null).length;
-  $('status').textContent = `${id} · ${qty.toLocaleString('en-US')} unidades · ${count}/6 ciudades con datos. Consultado ${new Date(scanResult.fetchedAt).toLocaleTimeString()}.`;
+  $('status').textContent = `${$('resource').selectedOptions[0].textContent} T${$('tier').value}.${$('ench').value} · ${qty.toLocaleString('en-US')} unidades · ${count}/6 ciudades con datos. Consultado ${new Date(scanResult.fetchedAt).toLocaleTimeString()}.`;
 }
 async function scan() {
   let id, qty;
@@ -74,3 +74,32 @@ for (const id of ['sort','freshness']) $(id).addEventListener('change', render);
 setInterval(render, 60000);
 document.addEventListener('visibilitychange', () => { if (!document.hidden) render(); });
 syncEnchant();
+
+// Optional page tool; browsers without WebMCP keep the normal UI unchanged.
+if (document.modelContext?.registerTool) {
+  const lifecycle = new AbortController();
+  try {
+    Promise.resolve(document.modelContext.registerTool({
+      name: 'scan_resource_markets',
+      title: 'Scan Albion resource markets',
+      description: 'Select a resource and scan the six Americas markets, updating the visible scanner. Does not trade or act in the game.',
+      inputSchema: { type: 'object', properties: { resource: {type:'string',enum:Market.RESOURCES}, tier:{type:'integer',minimum:2,maximum:8}, enchantment:{type:'integer',minimum:0,maximum:4}, quantity:{type:'integer',minimum:1,maximum:1000000000} }, required:['resource','tier','enchantment','quantity'], additionalProperties:false },
+      annotations: { readOnlyHint:false, untrustedContentHint:true },
+      async execute(input) {
+        if (!input || typeof input !== 'object') throw new Error('Expected scanner inputs.');
+        Market.itemId(input.resource,input.tier,input.enchantment);
+        Market.quantity(input.quantity);
+        if ($('scan').disabled) throw new Error('A scan is already in progress.');
+        $('resource').value=input.resource;
+        $('tier').value=String(input.tier);
+        syncEnchant();
+        $('ench').value=String(input.enchantment);
+        $('qty').value=String(input.quantity);
+        await scan();
+        if (!scanResult) throw new Error($('status').textContent);
+        return { item:scanResult.id,quantity:scanResult.qty,markets:Market.normalize(scanResult.data,scanResult.id,scanResult.qty,Number($('freshness').value)) };
+      }
+    },{signal:lifecycle.signal})).catch(()=>{});
+  } catch {}
+  window.addEventListener('pagehide',event=>{if (!event.persisted) lifecycle.abort();},{once:true});
+}
